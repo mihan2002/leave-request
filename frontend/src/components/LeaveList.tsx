@@ -1,5 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  Paper,
+  Stack,
+  Box,
+} from "@mui/material";
 import { leaveBus } from "../utils/rxBus";
 import LeaveForm from "./LeaveForm";
 import { logout } from "../services/authService";
@@ -22,7 +38,6 @@ export default function LeaveList() {
   const fetchLeaves = async () => {
     try {
       const res = await getLeaves();
-
       if (Array.isArray(res)) {
         setLeaves(res);
       } else {
@@ -66,97 +81,102 @@ export default function LeaveList() {
       navigate("/login");
     }
   };
+
   const handleDelete = async (id: number) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this leave request?"
-    );
+    const confirmDelete = window.confirm("Are you sure you want to delete this leave request?");
     if (!confirmDelete) return;
 
     try {
       await deleteLeave(id);
-      fetchLeaves(); // refresh the list
+      fetchLeaves();
     } catch (err) {
       console.error("Failed to delete leave request:", err);
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Leave Requests</h1>
-        <div className="flex gap-2">
-          <button
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
-            onClick={handleNew}
-          >
-            + New Leave
-          </button>
-          <button
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
-        </div>
-      </div>
+    <Box sx={{ backgroundColor: "#f4f6f8", minHeight: "100vh", py: 5 }}>
+      <Paper
+        sx={{
+          maxWidth: "90%",
+          mx: "auto",
+          p: 4,
+          backgroundColor: "#e8ebed",
+          boxShadow: 3,
+          borderRadius: 2,
+        }}
+      >
+        <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
+          <Typography variant="h4" fontWeight="bold">
+            Leave Requests
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained" color="success" onClick={handleNew}>
+              + New Leave
+            </Button>
+            <Button variant="contained" color="error" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Stack>
+        </Stack>
 
-      {leaves.length === 0 ? (
-        <p className="text-center text-gray-500">No leave requests found.</p>
-      ) : (
-        <table className="w-full table-auto border-collapse">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-4 py-2">Type</th>
-              <th className="border px-4 py-2">Start Date</th>
-              <th className="border px-4 py-2">End Date</th>
-              <th className="border px-4 py-2">Reason</th>
-              <th className="border px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leaves.map((leave) => (
-              <tr key={leave.id} className="text-center">
-                <td className="border px-4 py-2">{leave.type}</td>
-                <td className="border px-4 py-2">{leave.startDate}</td>
-                <td className="border px-4 py-2">{leave.endDate}</td>
-                <td className="border px-4 py-2">{leave.reason}</td>
-                <td className="border px-4 py-2 flex justify-center gap-2">
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded"
-                    onClick={() => handleUpdate(leave)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
-                    onClick={() => handleDelete(leave.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+        {leaves.length === 0 ? (
+          <Typography align="center" color="text.secondary">
+            No leave requests found.
+          </Typography>
+        ) : (
+          <TableContainer component={Paper} sx={{ backgroundColor: "#f0f2f5" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Type</TableCell>
+                  <TableCell>Start Date</TableCell>
+                  <TableCell>End Date</TableCell>
+                  <TableCell>Reason</TableCell>
+                  <TableCell align="center">Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {leaves.map((leave) => (
+                  <TableRow key={leave.id}>
+                    <TableCell>{leave.type}</TableCell>
+                    <TableCell>{leave.startDate}</TableCell>
+                    <TableCell>{leave.endDate}</TableCell>
+                    <TableCell>{leave.reason}</TableCell>
+                    <TableCell align="center">
+                      <Stack direction="row" spacing={1} justifyContent="center">
+                        <Button
+                          variant="contained"
+                          color="warning"
+                          size="small"
+                          onClick={() => handleUpdate(leave)}
+                        >
+                          Update
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          size="small"
+                          onClick={() => handleDelete(leave.id)}
+                        >
+                          Delete
+                        </Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
 
-      {/* Modal */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl relative">
-            <button
-              className="absolute top-2 right-3 text-gray-500 hover:text-gray-700 text-2xl font-bold"
-              onClick={() => {
-                setShowForm(false);
-                setEditingLeave(null);
-              }}
-            >
-              &times;
-            </button>
+        <Dialog open={showForm} onClose={() => setShowForm(false)} fullWidth maxWidth="sm">
+          <DialogTitle>{editingLeave ? "Update Leave" : "Request Leave"}</DialogTitle>
+          <DialogContent>
             <LeaveForm editingLeave={editingLeave} />
-          </div>
-        </div>
-      )}
-    </div>
+          </DialogContent>
+        </Dialog>
+      </Paper>
+    </Box>
   );
 }

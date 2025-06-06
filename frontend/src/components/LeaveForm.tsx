@@ -1,4 +1,16 @@
 import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  FormControl,
+  InputLabel,
+  Alert,
+  Paper,
+} from "@mui/material";
 import { createLeave, updateLeave } from "../services/leaveService";
 import { leaveBus } from "../utils/rxBus";
 
@@ -67,77 +79,86 @@ const LeaveForm: React.FC<Props> = ({ editingLeave }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1 className="text-xl font-bold mb-4 text-center">
+    <Paper elevation={3} sx={{ p: 4, maxWidth: 600, mx: "auto", mt: 4 }}>
+      <Typography variant="h5" align="center" gutterBottom>
         {editingLeave ? "Update Leave" : "Request Leave"}
-      </h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      </Typography>
 
-      <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2" htmlFor="type">
-          Leave Type
-        </label>
-        <select
-          id="type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="">Select leave type</option>
-          {leaveTypes.map((lt) => (
-            <option key={lt} value={lt}>
-              {lt}
-            </option>
-          ))}
-        </select>
-      </div>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
-      <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2" htmlFor="startDate">
-          Start Date
-        </label>
-        <input
+      <Box component="form" onSubmit={handleSubmit} noValidate>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="leave-type-label">Leave Type</InputLabel>
+          <Select
+            labelId="leave-type-label"
+            id="type"
+            value={type}
+            label="Leave Type"
+            onChange={(e) => setType(e.target.value)}
+          >
+            {leaveTypes.map((lt) => (
+              <MenuItem key={lt} value={lt}>
+                {lt}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <TextField
+          label="Start Date"
           type="date"
-          id="startDate"
+          fullWidth
+          margin="normal"
+          InputLabelProps={{ shrink: true }}
           value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
+          onChange={(e) => {
+            const selectedDate = e.target.value;
+            setStartDate(selectedDate);
 
-      <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2" htmlFor="endDate">
-          End Date
-        </label>
-        <input
+            if (endDate && selectedDate > endDate) {
+              setEndDate("");
+            }
+          }}
+        />
+
+        <TextField
+          label="End Date"
           type="date"
-          id="endDate"
+          fullWidth
+          margin="normal"
+          InputLabelProps={{ shrink: true }}
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
-          className="w-full border rounded px-3 py-2"
+          inputProps={{
+            min: startDate,
+          }}
         />
-      </div>
 
-      <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2" htmlFor="reason">
-          Reason
-        </label>
-        <textarea
-          id="reason"
+        <TextField
+          label="Reason"
+          multiline
+          rows={4}
+          fullWidth
+          margin="normal"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          rows={4}
         />
-      </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded"
-      >
-        {editingLeave ? "Update" : "Submit"}
-      </button>
-    </form>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+        >
+          {editingLeave ? "Update" : "Submit"}
+        </Button>
+      </Box>
+    </Paper>
   );
 };
 

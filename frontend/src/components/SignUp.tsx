@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  TextField,
+  Typography,
+  Alert,
+  Link,
+  Paper,
+} from "@mui/material";
 import { signup } from "../services/authService";
 
 export default function SignUp() {
@@ -19,62 +30,64 @@ export default function SignUp() {
         navigate("/leave-list");
       }
     } catch (err: any) {
-      setError( err.response.data.error);
+      setError(err.response?.data?.error || "Sign up failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-6">Sign Up</h1>
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Sign Up
+        </Typography>
 
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
-        <form className="flex flex-col" onSubmit={handleSubmit}>
-          <label htmlFor="username" className="mb-1 font-semibold">
-            Username
-          </label>
-          <input
-            className="border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring focus:border-blue-300"
-            type="text"
-            id="username"
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <TextField
+            label="Username"
+            fullWidth
+            margin="normal"
+            required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
           />
 
-          <label htmlFor="password" className="mb-1 font-semibold">
-            Password
-          </label>
-          <input
-            className="border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring focus:border-blue-300"
+          <TextField
+            label="Password"
             type="password"
-            id="password"
+            fullWidth
+            margin="normal"
+            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
 
-          <button
+          <Button
             type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
             disabled={loading}
-            className={`bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            sx={{ mt: 2 }}
           >
-            {loading ? "Registering..." : "Sign Up"}
-          </button>
-        </form>
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Sign Up"}
+          </Button>
+        </Box>
 
-        <p className="text-sm mt-4 text-center">
+        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
+          <Link component={RouterLink} to="/login" underline="hover">
             Login
           </Link>
-        </p>
-      </div>
-    </div>
+        </Typography>
+      </Paper>
+    </Container>
   );
 }
