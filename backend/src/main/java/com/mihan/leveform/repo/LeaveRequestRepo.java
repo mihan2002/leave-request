@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface LeaveRequestRepo extends JpaRepository<LeaveRequest,Integer> {
-    List<LeaveRequest> findByUserId(Long userId);
+
+    List<LeaveRequest> findByUserId(Integer userId);
 }

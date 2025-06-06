@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import LeaveList from "./components/LeaveList";
@@ -13,7 +13,7 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/leave-list" element={<LeaveList />} />
         </Route>
-        {/* <Route path="*" element={<Navigate to="/login" />} /> */}
+        <Route path="*" element={<Navigate to="/login" />} /> 
       </Routes>
     </BrowserRouter>
   );

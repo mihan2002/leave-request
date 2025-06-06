@@ -12,6 +12,17 @@ type Props = {
   } | null;
 };
 
+const leaveTypes = [
+  "Sick Leave",
+  "Casual Leave",
+  "Earned Leave",
+  "Maternity Leave",
+  "Paternity Leave",
+  "Compensatory Leave",
+  "Bereavement Leave",
+  "Unpaid Leave",
+];
+
 const LeaveForm: React.FC<Props> = ({ editingLeave }) => {
   const [type, setType] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -39,7 +50,12 @@ const LeaveForm: React.FC<Props> = ({ editingLeave }) => {
 
     try {
       if (editingLeave) {
-        await updateLeave(editingLeave.id, { type, startDate, endDate, reason });
+        await updateLeave(editingLeave.id, {
+          type,
+          startDate,
+          endDate,
+          reason,
+        });
       } else {
         await createLeave({ type, startDate, endDate, reason });
       }
@@ -56,23 +72,69 @@ const LeaveForm: React.FC<Props> = ({ editingLeave }) => {
         {editingLeave ? "Update Leave" : "Request Leave"}
       </h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
+
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2" htmlFor="type">Leave Type</label>
-        <input type="text" id="type" value={type} onChange={(e) => setType(e.target.value)} className="w-full border rounded px-3 py-2" />
+        <label className="block text-sm font-semibold mb-2" htmlFor="type">
+          Leave Type
+        </label>
+        <select
+          id="type"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="w-full border rounded px-3 py-2"
+        >
+          <option value="">Select leave type</option>
+          {leaveTypes.map((lt) => (
+            <option key={lt} value={lt}>
+              {lt}
+            </option>
+          ))}
+        </select>
       </div>
+
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2" htmlFor="startDate">Start Date</label>
-        <input type="date" id="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full border rounded px-3 py-2" />
+        <label className="block text-sm font-semibold mb-2" htmlFor="startDate">
+          Start Date
+        </label>
+        <input
+          type="date"
+          id="startDate"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="w-full border rounded px-3 py-2"
+        />
       </div>
+
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2" htmlFor="endDate">End Date</label>
-        <input type="date" id="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full border rounded px-3 py-2" />
+        <label className="block text-sm font-semibold mb-2" htmlFor="endDate">
+          End Date
+        </label>
+        <input
+          type="date"
+          id="endDate"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="w-full border rounded px-3 py-2"
+        />
       </div>
+
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-2" htmlFor="reason">Reason</label>
-        <textarea id="reason" value={reason} onChange={(e) => setReason(e.target.value)} className="w-full border rounded px-3 py-2" rows={4} />
+        <label className="block text-sm font-semibold mb-2" htmlFor="reason">
+          Reason
+        </label>
+        <textarea
+          id="reason"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          className="w-full border rounded px-3 py-2"
+          rows={4}
+        />
       </div>
-      <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
+
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white py-2 rounded"
+      >
         {editingLeave ? "Update" : "Submit"}
       </button>
     </form>

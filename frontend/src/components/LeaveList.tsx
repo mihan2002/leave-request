@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { getLeaves } from "../services/leaveService";
+import { useNavigate } from "react-router-dom";
 import { leaveBus } from "../utils/rxBus";
 import LeaveForm from "./LeaveForm";
+import { logout } from "../services/authService";
+import { getLeaves, deleteLeave } from "../services/leaveService";
 
 type Leave = {
   id: number;
@@ -23,13 +25,21 @@ export default function LeaveList() {
   ]);
   const [showForm, setShowForm] = useState(false);
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
+  const navigate = useNavigate();
 
   const fetchLeaves = async () => {
     try {
       const res = await getLeaves();
-    //  setLeaves(res.data);
+
+      if (Array.isArray(res)) {
+        setLeaves(res);
+      } else {
+        console.warn("Unexpected response format:", res);
+        setLeaves([]);
+      }
     } catch (err) {
       console.error("Failed to fetch leaves:", err);
+      setLeaves([]);
     }
   };
 
@@ -57,16 +67,45 @@ export default function LeaveList() {
     setShowForm(true);
   };
 
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      logout();
+      navigate("/login");
+    }
+  };
+  const handleDelete = async (id: number) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this leave request?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await deleteLeave(id);
+      fetchLeaves(); // refresh the list
+    } catch (err) {
+      console.error("Failed to delete leave request:", err);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Leave Requests</h1>
-        <button
-          className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
-          onClick={handleNew}
-        >
-          + New Leave
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded"
+            onClick={handleNew}
+          >
+            + New Leave
+          </button>
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {leaves.length === 0 ? (
@@ -89,12 +128,18 @@ export default function LeaveList() {
                 <td className="border px-4 py-2">{leave.startDate}</td>
                 <td className="border px-4 py-2">{leave.endDate}</td>
                 <td className="border px-4 py-2">{leave.reason}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-4 py-2 flex justify-center gap-2">
                   <button
                     className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded"
                     onClick={() => handleUpdate(leave)}
                   >
                     Update
+                  </button>
+                  <button
+                    className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
+                    onClick={() => handleDelete(leave.id)}
+                  >
+                    Delete
                   </button>
                 </td>
               </tr>

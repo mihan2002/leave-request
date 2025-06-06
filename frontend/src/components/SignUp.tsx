@@ -15,11 +15,11 @@ export default function SignUp() {
     setLoading(true);
     try {
       const res = await signup(username, password);
-      if (res.status === 200) {
-        navigate("/");
+      if (res.token) {
+        navigate("/leave-list");
       }
     } catch (err: any) {
-      setError(err?.response?.data?.message || "Registration failed. Please try again.");
+      setError( err.response.data.error);
     } finally {
       setLoading(false);
     }

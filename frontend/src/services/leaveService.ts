@@ -2,7 +2,7 @@
 import api from './http';
 
 export const getLeaves = async () => {
-  const res = await api.get('/leaves');
+  const res = await api.get('api/leave-requests');
   return res.data;
 };
 
@@ -12,7 +12,7 @@ export const createLeave = async (leaveData: {
   endDate: string;
   reason: string;
 }) => {
-  const res = await api.post('/leaves', leaveData);
+  const res = await api.post('api/leave-requests', leaveData);
   return res.data;
 };
 
@@ -22,11 +22,11 @@ export const updateLeave = async (id: number, leaveData: {
   endDate: string;
   reason: string;
 }) => {
-  const res = await api.put(`/leaves/${id}`, leaveData);
+  const res = await api.put(`api/leave-requests/${id}`, leaveData);
   return res.data;
 };
 
 export const deleteLeave = async (id: number) => {
-  const res = await api.delete(`/leaves/${id}`);
+  const res = await api.delete(`api/leave-requests/${id}`);
   return res.data;
 };

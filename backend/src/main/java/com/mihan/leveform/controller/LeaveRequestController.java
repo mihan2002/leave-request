@@ -5,6 +5,7 @@ import com.mihan.leveform.model.LeaveRequest;
 import com.mihan.leveform.service.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,25 +18,26 @@ public class LeaveRequestController {
     private LeaveRequestService service;
 
     @PostMapping
-    public ResponseEntity<LeaveRequest> create(@RequestBody LeaveRequestDto request) {
-        LeaveRequest created = service.create(request);
-        return ResponseEntity.status(201).body(created); // 201 Created
+    public ResponseEntity<LeaveRequest> create(@RequestBody LeaveRequestDto request, Authentication authentication) {
+
+        LeaveRequest created = service.create(request,authentication);
+        return ResponseEntity.status(201).body(created);
     }
 
     @GetMapping
-    public ResponseEntity<List<LeaveRequest>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<LeaveRequest>> getAll(Authentication authentication) {
+        return ResponseEntity.ok(service.getAll(authentication));
     }
 
-    @PutMapping
-    public ResponseEntity<LeaveRequest> update(@RequestBody LeaveRequest request) {
-        LeaveRequest updated = service.update(request);
+    @PutMapping("/{id}")
+    public ResponseEntity<LeaveRequest> update(@PathVariable int id ,@RequestBody LeaveRequest request) {
+        LeaveRequest updated = service.update(id,request);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         service.delete(id);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return ResponseEntity.noContent().build();
     }
 }

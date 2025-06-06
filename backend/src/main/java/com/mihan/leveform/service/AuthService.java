@@ -1,12 +1,12 @@
 package com.mihan.leveform.service;
 
-
 import com.mihan.leveform.dto.LoginRequestDto;
 import com.mihan.leveform.dto.RegisterRequestDto;
 import com.mihan.leveform.model.User;
 import com.mihan.leveform.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,9 +24,13 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public String register(RegisterRequestDto registerRequestDto) {
+
+        if (userRepo.findByUsername(registerRequestDto.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists.");
+        }
 
         User newUser = new User();
         newUser.setUsername(registerRequestDto.getUsername());
@@ -37,22 +41,24 @@ public class AuthService {
         return jwtService.generateToken(registerRequestDto.getUsername());
     }
 
-
     public String loginUser(LoginRequestDto loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(), loginRequest.getPassword()
+                    )
             );
 
-            if (authentication.isAuthenticated()) {
-                System.out.println("Login successful!");
-                return jwtService.generateToken(loginRequest.getUsername());
+            if (!authentication.isAuthenticated()) {
+                throw new BadCredentialsException("Invalid username or password.");
             }
-        } catch (Exception e) {
-            System.out.println("Authentication failed: " + e.getMessage());
-            return "Invalid credentials. Please try again.";
-        }
-        return "Unexpected error.";
 
+            return jwtService.generateToken(loginRequest.getUsername());
+
+        } catch (BadCredentialsException e) {
+            throw new IllegalArgumentException("Invalid username or password.");
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred during login: " + e.getMessage());
+        }
     }
 }
