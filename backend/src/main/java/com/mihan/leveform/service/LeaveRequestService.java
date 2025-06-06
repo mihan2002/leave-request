@@ -24,18 +24,7 @@ public class LeaveRequestService {
     public LeaveRequest create(LeaveRequestDto request, Authentication authentication) {
 
         User user = userRepo.findByUsername(authentication.getName()).get();
-        System.out.println();
-        System.out.println();
-        System.out.println("request: "+request.toString());
 
-        System.out.println();
-        System.out.println();
-        System.out.println("user"+user);
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
 
         LeaveRequest leaveRequest = new LeaveRequest();
         leaveRequest.setUserId(user.getId());
