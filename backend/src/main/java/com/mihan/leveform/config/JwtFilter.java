@@ -1,7 +1,8 @@
 package com.mihan.leveform.config;
 
-import com.mihan.leveform.service.JwtService;
+
 import com.mihan.leveform.service.MyUserDetailsService;
+import com.mihan.leveform.utility.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtService jwtService;
+    private JwtUtil jwtUtil;
     @Autowired
     private ApplicationContext context;
 
@@ -37,13 +38,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            userName = jwtService.extractUserName(token);
+            userName = jwtUtil.extractUsername(token);
         }
 
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(userName);
 
-            if (jwtService.validateToken(token, userDetails)) {
+            if (jwtUtil.isTokenValid(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 

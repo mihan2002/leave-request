@@ -4,6 +4,7 @@ import com.mihan.leveform.dto.LoginRequestDto;
 import com.mihan.leveform.dto.RegisterRequestDto;
 import com.mihan.leveform.model.User;
 import com.mihan.leveform.repo.UserRepo;
+import com.mihan.leveform.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +23,7 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtService jwtService;
+    private JwtUtil jwtUtil;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
@@ -38,7 +39,7 @@ public class AuthService {
 
         userRepo.save(newUser);
 
-        return jwtService.generateToken(registerRequestDto.getUsername());
+        return jwtUtil.generateToken(registerRequestDto.getUsername());
     }
 
     public String loginUser(LoginRequestDto loginRequest) {
@@ -53,7 +54,7 @@ public class AuthService {
                 throw new BadCredentialsException("Invalid username or password.");
             }
 
-            return jwtService.generateToken(loginRequest.getUsername());
+            return jwtUtil.generateToken(loginRequest.getUsername());
 
         } catch (BadCredentialsException e) {
             throw new IllegalArgumentException("Invalid username or password.");

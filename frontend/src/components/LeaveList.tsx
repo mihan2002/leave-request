@@ -14,15 +14,7 @@ type Leave = {
 };
 
 export default function LeaveList() {
-  const [leaves, setLeaves] = useState<Leave[]>([
-    {
-      id: 1,
-      type: "test",
-      startDate: "test",
-      endDate: "test",
-      reason: "test",
-    },
-  ]);
+  const [leaves, setLeaves] = useState<Leave[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingLeave, setEditingLeave] = useState<Leave | null>(null);
   const navigate = useNavigate();

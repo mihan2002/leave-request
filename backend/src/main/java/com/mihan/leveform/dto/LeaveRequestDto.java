@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class LeaveRequestDto {
 
 
-    private String leaveType;
+    private String type;
     private LocalDate startDate;
     private LocalDate endDate;
     private String reason;
