@@ -12,7 +12,8 @@ This is a full-stack **Leave Request Management** system built with a **React (V
 - React Router
 - Axios
 - RxJS
-- Tailwind CSS (optional)
+- react marial ui
+- Tailwind CSS
 - JWT Authentication
 
 ### Backend
@@ -29,7 +30,7 @@ This is a full-stack **Leave Request Management** system built with a **React (V
 
 ### Frontend
 
-Located in the root directory (e.g., `/leave-request-ui`):
+Located in the root directory `/leave-request/frontend`:
 
 - `Login`, `Signup`, `LeaveForm`, and `LeaveList` components
 - HTTP interceptor for JWT authentication
@@ -37,7 +38,7 @@ Located in the root directory (e.g., `/leave-request-ui`):
 
 ### Backend
 
-Located in `/backend`:
+Located in `/leave-request/backend`:
 
 - `User` and `LeaveRequest` entities
 - `AuthController` and `LeaveRequestController`
