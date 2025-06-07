@@ -8,20 +8,20 @@ This is a full-stack **Leave Request Management** system built with a **React (V
 
 ### Frontend
 
-- ⚛️ React (Vite)
-- 🧭 React Router
-- 🔗 Axios
-- 🔁 RxJS
-- 💅 Tailwind CSS (optional)
-- 🔐 JWT Authentication
+- React (Vite)
+- React Router
+- Axios
+- RxJS
+- Tailwind CSS (optional)
+- JWT Authentication
 
 ### Backend
 
-- ☕ Spring Boot
-- 🔒 Spring Security
-- 🐘 PostgreSQL
-- 🧬 JPA (Hibernate)
-- 🔐 JWT Token Authentication
+-  Spring Boot
+-  Spring Security
+-  PostgreSQL
+-  JPA (Hibernate)
+-  JWT Token Authentication
 
 ---
 
