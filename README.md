@@ -12,7 +12,7 @@ This is a full-stack **Leave Request Management** system built with a **React (V
 - React Router
 - Axios
 - RxJS
-- react marial ui
+- React Matirial UI
 - Tailwind CSS
 - JWT Authentication
 
