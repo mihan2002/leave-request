@@ -18,11 +18,26 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [usernameError, setUsernameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Reset errors
     setError("");
+    setUsernameError(false);
+    setPasswordError(false);
+
+    // Validate required fields
+    if (!username || !password) {
+      if (!username) setUsernameError(true);
+      if (!password) setPasswordError(true);
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await login(username, password);
@@ -58,6 +73,8 @@ export default function Login() {
             required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            error={usernameError}
+            helperText={usernameError ? "Username is required" : ""}
           />
 
           <TextField
@@ -68,6 +85,8 @@ export default function Login() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={passwordError}
+            helperText={passwordError ? "Password is required" : ""}
           />
 
           <Button

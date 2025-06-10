@@ -18,11 +18,26 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [usernameError, setUsernameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Reset previous errors
     setError(null);
+    setUsernameError(false);
+    setPasswordError(false);
+
+    // Check for empty fields
+    if (!username || !password) {
+      if (!username) setUsernameError(true);
+      if (!password) setPasswordError(true);
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await signup(username, password);
@@ -57,6 +72,8 @@ export default function SignUp() {
             required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            error={usernameError}
+            helperText={usernameError ? "Username is required" : ""}
           />
 
           <TextField
@@ -67,6 +84,8 @@ export default function SignUp() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={passwordError}
+            helperText={passwordError ? "Password is required" : ""}
           />
 
           <Button

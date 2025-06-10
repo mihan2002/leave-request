@@ -18,11 +18,11 @@ This is a full-stack **Leave Request Management** system built with a **React (V
 
 ### Backend
 
--  Spring Boot
--  Spring Security
--  PostgreSQL
--  JPA (Hibernate)
--  JWT Token Authentication
+- Spring Boot
+- Spring Security
+- PostgreSQL
+- JPA (Hibernate)
+- JWT Token Authentication
 
 ---
 
@@ -78,24 +78,22 @@ Create a .env file in the root of the frontend folder (leave-request-ui):
   VITE_APP_API_BASE=http://localhost:8080/
 ```
 
-Install dependencies:
 
 ```bash
-  cd leave-request-ui
-  npm install
+  cd leave-request
 ```
 
 ### 4. Run the Backend
 
-cd backend
-
 ```bash
+cd backend
 ./mvnw spring-boot:run
 ```
 
 ### 5. Run the Frontend
 
 ```bash
-  cd leave-request-ui
-npm run dev
+  cd frontend
+  npm install
+  npm run dev
 ```
